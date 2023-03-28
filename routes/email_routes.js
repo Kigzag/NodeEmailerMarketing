@@ -33,6 +33,8 @@ router.post('/', (req, res) => {
       template
     } = req.body;
 
+    console.log("started");
+
     // point to the template folder
     const handlebarOptions = {
       viewEngine: {
