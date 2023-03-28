@@ -1,0 +1,43 @@
+{
+  "name": "nodeemailermarketing",
+  "version": "1.0.0",
+  "description": "Node Emailing Server For Marketing",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon app.js",
+    "start": "node app.js",
+    "debug": "DEBUG=express:* node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kigzag/NodeEmailerMarketing.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Kigzag/NodeEmailerMarketing/issues"
+  },
+  "homepage": "https://github.com/Kigzag/NodeEmailerMarketing#readme",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "cors": "^2.8.5",
+    "detect-file-type": "^0.2.8",
+    "dotenv": "^16.0.3",
+    "email-validator": "^2.0.4",
+    "express": "^4.17.3",
+    "express-async-errors": "^3.1.1",
+    "express-handlebars": "^7.0.4",
+    "express-list-routes": "^1.1.3",
+    "file-type": "^17.1.1",
+    "generate-password": "^1.7.0",
+    "jsonwebtoken": "^8.5.1",
+    "mime-types": "^2.1.34",
+    "multiparty": "^4.2.3",
+    "nodemailer": "^6.9.1",
+    "nodemailer-express-handlebars": "^6.1.0",
+    "nodemon": "^2.0.9",
+    "path": "^0.12.7",
+    "pg": "^8.6.0"
+  }
+}
