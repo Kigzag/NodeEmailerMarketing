@@ -23,8 +23,22 @@ var transporter = nodemailer.createTransport({
   }
 });
 
-//  uploads series demo/trailer/description video
-//  because seriesid is unique video can go under kigzag-video bucket and thumbnail under kigzag-video-thumbnail
+router.get('/', (req, res) => {
+  try {
+    return res.send({
+      isSuccessful: true,
+      errorMsg: "",
+      result: "Node Mailer On!!!"
+    });
+  } catch (err) {
+    res.json({
+      isSuccessful: false,
+      errorMsg: err.message,
+      result: []
+    });
+  }
+});
+
 router.post('/', (req, res) => {
   try {
     const {
