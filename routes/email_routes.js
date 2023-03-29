@@ -72,8 +72,6 @@ router.post('/', (req, res) => {
       });
     }
 
-    result = []
-
     for (i = 0; i < emailList.length; i++) {
       var mailOptions = {
         from: 'Crezalo <' + process.env.Email + '>', // sender address
@@ -91,14 +89,14 @@ router.post('/', (req, res) => {
           result.push(error);
           return console.log(error);
         }
-        result.push(info.response);
+        Console.log("Message Info: "+info.response);
       });
     }
 
     return res.send({
       isSuccessful: true,
       errorMsg: "",
-      result: result
+      result: "success"
     });
 
   } catch (err) {
