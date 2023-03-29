@@ -89,7 +89,7 @@ router.post('/', (req, res) => {
           result.push(error);
           return console.log(error);
         }
-        Console.log("Message Info: "+info.response);
+        console.log("Message Info: "+info.response);
       });
     }
 
