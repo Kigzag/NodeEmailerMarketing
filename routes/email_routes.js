@@ -70,7 +70,7 @@ router.post('/', async (req, res) => {
 
     for (i = 0; i < ud.rows.length; i++) {
       console.log(ud.rows[i]);
-      if (emails.split(',').length >= 1) {
+      if (ud.rows[i].emails.split(',').length >= 1) {
         emails = ud.rows[i].emails.split(',');
         console.log(emails);
         for (j = 0; j < emails.length; j++) {
