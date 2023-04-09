@@ -39,15 +39,20 @@ router.get('/', (req, res) => {
   }
 });
 
-router.post('/', (req, res) => {
+// template : generic , ..
+// table : marketing , marketingDummy
+// SQL query to select data from table
+
+router.post('/', async (req, res) => {
   try {
     const {
-      names,
-      emails,
+      sqlquery,
       template
     } = req.body;
 
     console.log("started");
+
+    const ud = await pool.query(sqlquery);
 
     // point to the template folder
     const handlebarOptions = {
@@ -61,36 +66,33 @@ router.post('/', (req, res) => {
     // use a template file with nodemailer
     transporter.use('compile', hbs(handlebarOptions))
 
-    emailList = emails.split(',');
-    nameList = names.split(',');
+    result = []
 
-    if (nameList.length != emailList.length) {
-      res.json({
-        isSuccessful: false,
-        errorMsg: "different number of names and emails",
-        result: []
-      });
-    }
+    for (i = 0; i < ud.rows.length; i++) {
+      console.log(ud.rows[i]);
+      emails = ud.rows[i].emails.split(',');
+      console.log(emails);
+      for (j = 0; j < emails.length; j++) {
+        console.log("email: " + emails[j]);
+        var mailOptions = {
+          from: 'Crezalo <' + process.env.Email + '>', // sender address
+          to: emails[j], // list of receivers separated by comma
+          subject: '₹₹₹ Earn From Your Subscribers Today with Crezalo.com - 0% Revenue Sharing!',
+          template: template, // the name of the template file i.e email.handlebars
+          context: {
+            name: ud.rows[i].name, // replace {{name}} with Adebola
+          }
+        };
 
-    for (i = 0; i < emailList.length; i++) {
-      var mailOptions = {
-        from: 'Crezalo <' + process.env.Email + '>', // sender address
-        to: emailList[i], // list of receivers separated by comma
-        subject: '₹₹₹ Earn From Your Subscribers Today with Crezalo.com - 0% Revenue Sharing!',
-        template: template, // the name of the template file i.e email.handlebars
-        context: {
-          name: nameList[i], // replace {{name}} with Adebola
-        }
-      };
-
-      // trigger the sending of the E-mail
-      transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-          result.push(error);
-          return console.log(error);
-        }
-        console.log("Message Info: "+info.response);
-      });
+        // trigger the sending of the E-mail
+        transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+            result.push(error);
+            return console.log(error);
+          }
+          console.log("Message Info: " + info.response);
+        });
+      }
     }
 
     return res.send({
