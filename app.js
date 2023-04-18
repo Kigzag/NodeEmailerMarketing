@@ -11,7 +11,7 @@ app.use(cors({
   origin: '*',
 }));
 app.use(express.json());
-app.use("/email", emailRoutes);
+app.use("/", emailRoutes);
 
 app.listen(5001, function () {
   console.log('Node Mailing Server is listening on port 5001!')
