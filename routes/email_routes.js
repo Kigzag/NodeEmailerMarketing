@@ -23,7 +23,7 @@ var transporter = nodemailer.createTransport({
   }
 });
 
-router.get('/', (req, res) => {
+router.get('/', authorise, (req, res) => {
   try {
     return res.send({
       isSuccessful: true,
@@ -43,66 +43,73 @@ router.get('/', (req, res) => {
 // table : marketing , marketingDummy
 // SQL query to select data from table
 
-router.post('/', async (req, res) => {
+router.post('/', authorise, async (req, res) => {
   try {
     const {
       sqlquery,
       template
     } = req.body;
 
-    console.log("started");
+    if (req.username == "admin") {
+      console.log("started");
 
-    const ud = await pool.query(sqlquery);
+      const ud = await pool.query(sqlquery);
 
-    // point to the template folder
-    const handlebarOptions = {
-      viewEngine: {
-        partialsDir: path.resolve('./templates/'),
-        defaultLayout: false,
-      },
-      viewPath: path.resolve('./templates/'),
-    };
+      // point to the template folder
+      const handlebarOptions = {
+        viewEngine: {
+          partialsDir: path.resolve('./templates/'),
+          defaultLayout: false,
+        },
+        viewPath: path.resolve('./templates/'),
+      };
 
-    // use a template file with nodemailer
-    transporter.use('compile', hbs(handlebarOptions))
+      // use a template file with nodemailer
+      transporter.use('compile', hbs(handlebarOptions))
 
-    result = []
+      result = []
 
-    for (i = 0; i < ud.rows.length; i++) {
-      console.log(ud.rows[i]);
-      if (ud.rows[i].emails.split(',').length >= 1) {
-        emails = ud.rows[i].emails.split(',');
-        console.log(emails);
-        for (j = 0; j < emails.length; j++) {
-          console.log("email: " + emails[j]);
-          var mailOptions = {
-            from: 'Crezalo <' + process.env.Email + '>', // sender address
-            to: emails[j], // list of receivers separated by comma
-            subject: '₹₹₹ Earn From Your Subscribers Today with Crezalo.com - 0% Revenue Sharing!',
-            template: template, // the name of the template file i.e email.handlebars
-            context: {
-              name: ud.rows[i].name, // replace {{name}} with Adebola
-            }
-          };
+      for (i = 0; i < ud.rows.length; i++) {
+        console.log(ud.rows[i]);
+        if (ud.rows[i].emails.split(',').length >= 1) {
+          emails = ud.rows[i].emails.split(',');
+          console.log(emails);
+          for (j = 0; j < emails.length; j++) {
+            console.log("email: " + emails[j]);
+            var mailOptions = {
+              from: 'Crezalo <' + process.env.Email + '>', // sender address
+              to: emails[j], // list of receivers separated by comma
+              subject: '₹₹₹ Earn From Your Subscribers Today with Crezalo.com - 0% Revenue Sharing!',
+              template: template, // the name of the template file i.e email.handlebars
+              context: {
+                name: ud.rows[i].name, // replace {{name}} with Adebola
+              }
+            };
 
-          // trigger the sending of the E-mail
-          transporter.sendMail(mailOptions, function (error, info) {
-            if (error) {
-              result.push(error);
-              return console.log(error);
-            }
-            console.log("Message Info: " + info.response);
-          });
+            // trigger the sending of the E-mail
+            transporter.sendMail(mailOptions, function (error, info) {
+              if (error) {
+                result.push(error);
+                return console.log(error);
+              }
+              console.log("Message Info: " + info.response);
+            });
+          }
         }
       }
+
+      return res.send({
+        isSuccessful: true,
+        errorMsg: "",
+        result: "success"
+      });
+    } else {
+      res.json({
+        isSuccessful: false,
+        errorMsg: "unauthorised access",
+        result: ""
+      });
     }
-
-    return res.send({
-      isSuccessful: true,
-      errorMsg: "",
-      result: "success"
-    });
-
   } catch (err) {
     res.json({
       isSuccessful: false,

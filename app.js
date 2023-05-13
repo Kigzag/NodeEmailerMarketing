@@ -4,6 +4,7 @@ const fs = require('fs');
 const cors = require('cors');
 require("express-async-errors");
 const emailRoutes = require("./routes/email_routes");
+const validationRoutes = require("./routes/validation_routes");
 
 const app = express();
 
@@ -12,6 +13,7 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use("/", emailRoutes);
+app.use("/validation", validationRoutes);
 
 app.listen(5001, function () {
   console.log('Node Mailing Server is listening on port 5001!')
